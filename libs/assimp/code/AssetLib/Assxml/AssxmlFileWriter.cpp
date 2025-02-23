@@ -56,7 +56,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stdarg.h>
 
 #ifdef ASSIMP_BUILD_NO_OWN_ZLIB
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <zlib.h>
+
+#ifdef __cplusplus
+}
+#endif
 #else
 #include <contrib/zlib/zlib.h>
 #endif

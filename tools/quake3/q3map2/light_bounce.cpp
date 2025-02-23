@@ -372,7 +372,7 @@ static void RadSubdivideDiffuseLight( int lightmapNum, bspDrawSurface_t *ds, raw
 
 	/* get bounds for winding */
 	MinMax minmax;
-	for ( const radVert_t& vert : Span( rw->verts, rw->numVerts ) )
+	for ( const radVert_t& vert : Span<radVert_t>( rw->verts, rw->numVerts ) )
 		minmax.extend( vert.xyz );
 
 	/* subdivide if necessary */
@@ -420,7 +420,7 @@ static void RadSubdivideDiffuseLight( int lightmapNum, bspDrawSurface_t *ds, raw
 
 	/* create an average normal */
 	normal.set( 0 );
-	for ( const radVert_t& vert : Span( rw->verts, rw->numVerts ) )
+	for ( const radVert_t& vert : Span<radVert_t>( rw->verts, rw->numVerts ) )
 	{
 		normal += vert.normal;
 	}
@@ -468,7 +468,7 @@ static void RadSubdivideDiffuseLight( int lightmapNum, bspDrawSurface_t *ds, raw
 	light.fade = 1.0f;
 	/* create a regular winding */
 	light.w = AllocWinding( rw->numVerts );
-	for ( const radVert_t& vert : Span( rw->verts, rw->numVerts ) )
+	for ( const radVert_t& vert : Span<radVert_t>( rw->verts, rw->numVerts ) )
 	{
 		light.w.push_back( vert.xyz );
 	}
@@ -664,7 +664,7 @@ void RadLightForPatch( int num, int lightmapNum, rawLightmap_t *lm, const shader
 	/* FIXME: build interpolation table into color[ 1 ] */
 
 	/* fix up color indexes */
-	for ( bspDrawVert_t& vert : Span( mesh->verts, mesh->width * mesh->height ) )
+	for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( mesh->verts, mesh->width * mesh->height ) )
 	{
 		if ( vert.color[ 0 ][ 0 ] >= ds.numVerts ) {
 			vert.color[ 0 ][ 0 ] = ds.numVerts - 1;

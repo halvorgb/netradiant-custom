@@ -61,7 +61,7 @@ void Fur( mapDrawSurface_t *ds ){
 	//%		numLayers, offset, fade, ds->shaderInfo->shader );
 
 	/* initial offset */
-	for ( bspDrawVert_t& dv : Span( ds->verts, ds->numVerts ) )
+	for ( bspDrawVert_t& dv : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 	{
 		/* offset is scaled by original vertex alpha */
 		const float a = dv.color[ 0 ].alpha() / 255.0;

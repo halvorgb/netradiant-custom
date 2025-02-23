@@ -51,7 +51,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/IOStream.hpp>
 
 #ifdef ASSIMP_BUILD_NO_OWN_ZLIB
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <zlib.h>
+
+#ifdef __cplusplus
+}
+#endif
 #else
 #include "../contrib/zlib/zlib.h"
 #endif
@@ -289,15 +297,15 @@ public:
     size_t Read(void * /*pvBuffer*/, size_t /*pSize*/, size_t /*pCount*/) override {
         return 0;
     }
-    
+
     aiReturn Seek(size_t /*pOffset*/, aiOrigin /*pOrigin*/) override {
         return aiReturn_FAILURE;
     }
-    
+
     size_t Tell() const override {
         return cursor;
     }
-    
+
     void Flush() override {
         // not implemented
     }

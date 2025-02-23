@@ -465,7 +465,7 @@ public:
 	DirectionAttribute( const char* key ) :
 		m_key( key ),
 		m_entry( new NonModalEntry( ApplyCaller( *this ), UpdateCaller( *this ) ) ),
-		m_radio( RadioHBox_new( StringArrayRange( buttons ) ) ),
+		m_radio( RadioHBox_new( makeStringArrayRange( buttons ) ) ),
 		m_butt( ApplyVecCaller( *this ) ),
 		m_hbox( new_container_widget() ){
 		static_cast<QHBoxLayout*>( m_hbox->layout() )->addLayout( m_radio.m_hbox );

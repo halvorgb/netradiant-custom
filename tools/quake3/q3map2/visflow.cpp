@@ -403,7 +403,7 @@ static void RecursiveLeafFlow( int leafnum, threaddata_t *thread, pstack_t *prev
 	vis = (long *)thread->base->portalvis;
 
 	// check all portals for flowing into other leafs
-	for ( vportal_t *p : Span( leaf->portals, leaf->numportals ) )
+	for ( vportal_t *p : Span<vportal_t*>( leaf->portals, leaf->numportals ) )
 	{
 		if ( p->removed ) {
 			continue;
@@ -1244,7 +1244,7 @@ void CreatePassages( int portalnum ){
 	}
 
 	lastpassage = NULL;
-	for ( const vportal_t *target : Span( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
+	for ( const vportal_t *target : Span<vportal_t*>( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
 	{
 		if ( target->removed ) {
 			continue;
@@ -1341,12 +1341,12 @@ void CreatePassages( int portalnum ){
 void PassageMemory(){
 	int totalmem = 0, totalportals = 0;
 
-	for ( const vportal_t *portal : Span( sorted_portals, numportals ) )
+	for ( const vportal_t *portal : Span<vportal_t*>( sorted_portals, numportals ) )
 	{
 		if ( portal->removed ) {
 			continue;
 		}
-		for ( const vportal_t *target : Span( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
+		for ( const vportal_t *target : Span<vportal_t*>( leafs[portal->leaf].portals, leafs[portal->leaf].numportals ) )
 		{
 			if ( target->removed ) {
 				continue;
@@ -1410,7 +1410,7 @@ void PassageMemory(){
    ==================
  */
 static void SimpleFlood( vportal_t *srcportal, int leafnum ){
-	for ( const vportal_t *p : Span( leafs[leafnum].portals, leafs[leafnum].numportals ) )
+	for ( const vportal_t *p : Span<vportal_t*>( leafs[leafnum].portals, leafs[leafnum].numportals ) )
 	{
 		if ( p->removed ) {
 			continue;
@@ -1550,7 +1550,7 @@ static void RecursiveLeafBitFlow( int leafnum, byte *mightsee, byte *cansee ){
 
 
 	// check all portals for flowing into other leafs
-	for ( const vportal_t *p : Span( leafs[leafnum].portals, leafs[leafnum].numportals ) )
+	for ( const vportal_t *p : Span<vportal_t*>( leafs[leafnum].portals, leafs[leafnum].numportals ) )
 	{
 		if ( p->removed ) {
 			continue;

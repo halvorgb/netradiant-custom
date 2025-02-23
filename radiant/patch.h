@@ -1684,7 +1684,7 @@ public:
 	typedef MemberCaller<PatchInstance, void(), &PatchInstance::applyTransform> ApplyTransformCaller;
 
 
-	bool testLight( const RendererLight& light ) const {
+	bool testLight( const RendererLight& light ) const override {
 		return light.testAABB( worldAABB() );
 	}
 };

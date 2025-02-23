@@ -87,7 +87,7 @@ LIBS_GL            ?= -lGL # -lopengl32 on Win32
 CPPFLAGS_DL        ?=
 LIBS_DL            ?= -ldl # nothing on Win32
 CPPFLAGS_ZLIB      ?=
-LIBS_ZLIB          ?= -lz
+LIBS_ZLIB          ?=
 CPPFLAGS_JPEG      ?=
 LIBS_JPEG          ?= -ljpeg
 DEPEND_ON_MAKEFILE ?= yes
@@ -229,26 +229,61 @@ ifeq ($(OS),Win32)
 else
 
 ifeq ($(OS),Darwin)
-	CPPFLAGS_COMMON += -DPOSIX -DXWINDOWS
-	CFLAGS_COMMON += -fPIC
-	CXXFLAGS_COMMON += -fno-exceptions -fno-rtti
-	MACLIBDIR ?= /opt/local/lib
-	CPPFLAGS_COMMON += -I$(MACLIBDIR)/../include -I/usr/X11R6/include
-	LDFLAGS_COMMON += -L$(MACLIBDIR) -L/usr/X11R6/lib
-	LDFLAGS_DLL += -dynamiclib -ldl
-	EXE ?= $(shell uname -m)
-	MAKE_EXE_SYMLINK = true
-	A = a
-	DLL = dylib
-	MWINDOWS =
-	# workaround for weird prints
-	ECHO_NOLF = /bin/echo -n
+    # Basic Darwin settings
+    CPPFLAGS_COMMON += -DPOSIX -DXWINDOWS -DQT_NO_KEYWORDS
+    CFLAGS_COMMON += -fPIC
+    CXXFLAGS_COMMON += -fno-exceptions -fno-rtti
 
-	# workaround: http://developer.apple.com/qa/qa2007/qa1567.html
-	LIBS_GL += -lX11 -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
-	# workaround: we have no "ldd" for OS X, so...
-	LDD =
-	OTOOL = otool
+    # Directory settings
+    MACLIBDIR ?= /opt/homebrew/lib
+    QTDIR ?= /opt/homebrew/Cellar/qt@5/5.15.16
+    MESADIR ?= /opt/homebrew/opt/mesa
+
+    # Common include and library paths
+    CPPFLAGS_COMMON += -I$(MACLIBDIR)/../include \
+                       -I/usr/X11R6/include \
+                       -I/opt/homebrew/opt/zlib/include \
+                       -I$(MESADIR)/include \
+                       -F$(QTDIR)/lib \
+                       -I$(QTDIR)/lib/QtCore.framework/Headers \
+                       -I$(QTDIR)/lib/QtGui.framework/Headers \
+                       -I$(QTDIR)/lib/QtWidgets.framework/Headers \
+                       -I$(QTDIR)/lib/QtOpenGL.framework/Headers
+
+    LDFLAGS_COMMON += -L$(MACLIBDIR) \
+                      -L/usr/X11R6/lib \
+                      -L$(MESADIR)/lib \
+                      -lz -v
+
+    LDFLAGS_DLL += -dynamiclib -ldl -L/opt/homebrew/opt/zlib/lib -v
+
+    # Qt framework definitions
+    LIBS_QTCORE := -F$(QTDIR)/lib -framework QtCore
+    LIBS_QTGUI := -F$(QTDIR)/lib -framework QtGui
+    LIBS_QTWIDGETS := -F$(QTDIR)/lib -framework QtWidgets
+
+    # Combined libraries
+    LIBS_COMMON += -F$(QTDIR)/lib \
+                   -framework QtCore \
+                   -framework QtGui \
+                   -framework QtWidgets \
+                   -framework QtOpenGL \
+                   -framework OpenGL \
+                   -lX11
+
+    # OpenGL settings (using both Mesa and Qt)
+    LIBS_GL = -L$(MESADIR)/lib -lGL \
+              -dylib_file /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+
+    # File extensions and tools
+    EXE ?= $(shell uname -m)
+    MAKE_EXE_SYMLINK = true
+    A = a
+    DLL = dylib
+    MWINDOWS =
+    ECHO_NOLF = /bin/echo -n
+    LDD =
+    OTOOL = otool
 else
 
 $(error Unsupported build OS: $(OS))

@@ -198,18 +198,23 @@ void GLSLProgram_link( GLuint program ){
 	ASSERT_MESSAGE( linked, "program link failed" );
 }
 
-void GLSLProgram_validate( GLuint program ){
-	gl().glValidateProgram( program );
+void GLSLProgram_validate(GLuint program) {
+	#ifdef __APPLE__
+		// Skip validation on macOS due to framebuffer requirements
+		globalOutputStream() << "Skipping shader validation on macOS\n";
+	#else
+		gl().glValidateProgram(program);
 
-	GLint validated = false;
-	gl().glGetProgramiv( program, GL_VALIDATE_STATUS, &validated );
+		GLint validated = false;
+		gl().glGetProgramiv(program, GL_VALIDATE_STATUS, &validated);
 
-	if ( !validated ) {
-		printProgramLog( program );
+		if (!validated) {
+			printProgramLog(program);
+		}
+
+		ASSERT_MESSAGE(validated, "program validation failed");
+	#endif
 	}
-
-	ASSERT_MESSAGE( validated, "program validation failed" );
-}
 
 bool g_bumpGLSLPass_enabled = false;
 bool g_depthfillPass_enabled = false;

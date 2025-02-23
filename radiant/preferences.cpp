@@ -277,7 +277,7 @@ void CGameDialog::CreateGlobalFrame( PreferencesPage& page, bool global ){
 	}
 	page.appendCombo(
 	    "Select the game",
-	    StringArrayRange( games ),
+	    makeStringArrayRange( games ),
 	    global?
 	    IntImportCallback( MemberCaller<CGameDialog, void(int), &CGameDialog::GameFileAssign>( *this ) ):
 	    IntImportCallback( MemberCaller<CGameDialog, void(int), &CGameDialog::GameFileImport>( *this ) ),

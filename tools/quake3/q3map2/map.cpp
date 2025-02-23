@@ -304,7 +304,7 @@ static void SnapPlaneImproved( Plane3f& plane, int numPoints, const Vector3 *poi
 		if ( numPoints > 0 ) {
 			// Adjust the dist so that the provided points don't drift away.
 			DoubleVector3 center( 0 );
-			for ( const Vector3& point : Span( points, numPoints ) )
+			for ( const Vector3& point : Span<const Vector3>( points, numPoints ) )
 			{
 				center += point;
 			}
@@ -1228,7 +1228,7 @@ static void AdjustBrushesForOrigin( entity_t& ent ){
 	/* walk patch list */
 	for ( parseMesh_t *p = ent.patches; p != NULL; p = p->next )
 	{
-		for ( bspDrawVert_t& vert : Span( p->mesh.verts, p->mesh.width * p->mesh.height ) )
+		for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( p->mesh.verts, p->mesh.width * p->mesh.height ) )
 			vert.xyz -= ent.originbrush_origin;
 	}
 }
@@ -1299,7 +1299,7 @@ static void SetEntityBounds( entity_t& e ){
 	}
 	for ( const parseMesh_t *p = e.patches; p; p = p->next )
 	{
-		for ( const bspDrawVert_t& vert : Span( p->mesh.verts, p->mesh.width * p->mesh.height ) )
+		for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( p->mesh.verts, p->mesh.width * p->mesh.height ) )
 			minmax.extend( vert.xyz );
 	}
 

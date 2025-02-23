@@ -2260,7 +2260,7 @@ void Orthographic_constructPreferences( PreferencesPage& page ){
 
 		page.appendCombo(
 		    "MSAA",
-		    StringArrayRange( samples ),
+		    makeStringArrayRange( samples ),
 		    IntImportCallback( MSAAImportCaller() ),
 		    IntExportCallback( MSAAExportCaller() )
 		);

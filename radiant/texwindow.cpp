@@ -1999,7 +1999,7 @@ void TextureBrowser_constructPreferences( PreferencesPage& page ){
 		const char* texture_scale[] = { "10%", "25%", "50%", "100%", "200%" };
 		page.appendCombo(
 		    "Texture Thumbnail Scale",
-		    StringArrayRange( texture_scale ),
+		    makeStringArrayRange( texture_scale ),
 		    IntImportCallback( TextureScaleImportCaller( g_TexBro ) ),
 		    IntExportCallback( TextureScaleExportCaller( g_TexBro ) )
 		);
@@ -2009,7 +2009,7 @@ void TextureBrowser_constructPreferences( PreferencesPage& page ){
 	page.appendSpinner( "Mousewheel Increment", g_TexBro.m_mouseWheelScrollIncrement, 0, 8192 );
 	{
 		const char* startup_shaders[] = { "None", TextureBrowser_getCommonShadersName() };
-		page.appendCombo( "Load Shaders at Startup", reinterpret_cast<int&>( g_TexBro.m_startupShaders ), StringArrayRange( startup_shaders ) );
+		page.appendCombo( "Load Shaders at Startup", reinterpret_cast<int&>( g_TexBro.m_startupShaders ), makeStringArrayRange( startup_shaders ) );
 	}
 	{
 		const auto str = StringStream<64>( "Hide nonShaders in ", TextureBrowser_getCommonShadersDir(), " folder" );

@@ -200,7 +200,7 @@ static mapDrawSurface_t *MakeSkyboxSurface( mapDrawSurface_t *src ){
 	ds->parent = src;
 
 	/* scale the surface vertexes */
-	for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 	{
 		matrix4_transform_point( skyboxTransform, vert.xyz );
 
@@ -292,7 +292,7 @@ void TidyEntitySurfaces( const entity_t& e ){
 static Vector2 CalcSurfaceTextureBias( const mapDrawSurface_t *ds ){
 	/* walk the verts and determine min/max st values */
 	Vector2 mins( 999999, 999999 ), maxs( -999999, -999999 ), bias;
-	for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 	{
 		for ( int j = 0; j < 2; j++ )
 		{
@@ -404,7 +404,7 @@ void ClassifySurfaces( int numSurfs, mapDrawSurface_t *ds ){
 
 		/* set surface bounding box */
 		ds->minmax.clear();
-		for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			ds->minmax.extend( vert.xyz );
 
 		/* try to get an existing plane */
@@ -416,7 +416,7 @@ void ClassifySurfaces( int numSurfs, mapDrawSurface_t *ds ){
 		else
 		{
 			plane = { 0, 0, 0, 0 };
-			for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+			for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			{
 				if ( vert.normal != g_vector3_identity ) {
 					plane.normal() = vert.normal;
@@ -437,7 +437,7 @@ void ClassifySurfaces( int numSurfs, mapDrawSurface_t *ds ){
 			ds->planar = true;
 
 			/* test each vert */
-			for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+			for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			{
 				/* point-plane test */
 				if ( fabs( plane3_distance_to_point( plane, vert.xyz ) ) > PLANAR_EPSILON ) {
@@ -627,14 +627,14 @@ static shaderInfo_t *GetIndexedShader( const shaderInfo_t *parent, const indexMa
 	/* determine min/max index */
 	byte minShaderIndex = 255;
 	byte maxShaderIndex = 0;
-	for ( const byte index : Span( shaderIndexes, numPoints ) )
+	for ( const byte index : Span<byte>( shaderIndexes, numPoints ) )
 	{
 		value_minimize( minShaderIndex, index );
 		value_maximize( maxShaderIndex, index );
 	}
 
 	/* set alpha inline */
-	for ( byte& index : Span( shaderIndexes, numPoints ) )
+	for ( byte& index : Span<byte>( shaderIndexes, numPoints ) )
 	{
 		/* straight rip from terrain.c */
 		if ( index < maxShaderIndex ) {
@@ -974,7 +974,7 @@ mapDrawSurface_t *DrawSurfaceForMesh( const entity_t& e, parseMesh_t *p, mesh_t 
 		ds->lightmapVecs[ 2 ] = plane.normal();
 
 		/* push this normal to all verts (ydnar 2003-02-14: bad idea, small patches get screwed up) */
-		for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			vert.normal = plane.normal();
 	}
 
@@ -1072,7 +1072,7 @@ static mapDrawSurface_t *DrawSurfaceForShader( const char *shader ){
 	shaderInfo_t *si = ShaderInfoForShader( shader );
 
 	/* find existing surface */
-	for ( mapDrawSurface_t& ds : Span( mapDrawSurfs, numMapDrawSurfs ) )
+	for ( mapDrawSurface_t& ds : Span<mapDrawSurface_t>( mapDrawSurfs, numMapDrawSurfs ) )
 	{
 		/* check it */
 		if ( ds.shaderInfo == si ) {
@@ -1099,7 +1099,7 @@ static mapDrawSurface_t *DrawSurfaceForShader( const char *shader ){
 static void AddSurfaceFlare( mapDrawSurface_t *ds, const Vector3& entityOrigin ){
 	Vector3 origin( 0 );
 	/* find centroid */
-	for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 		origin += vert.xyz;
 	origin /= ds->numVerts;
 	origin += entityOrigin;
@@ -1192,7 +1192,7 @@ void SubdivideFaceSurfaces( const entity_t& e ){
 	Sys_FPrintf( SYS_VRB, "--- SubdivideFaceSurfaces ---\n" );
 
 	/* walk the list of original surfaces, numMapDrawSurfs may increase in the process */
-	for ( mapDrawSurface_t& ds : Span( mapDrawSurfs + e.firstDrawSurf, mapDrawSurfs + numMapDrawSurfs ) )
+	for ( mapDrawSurface_t& ds : Span<mapDrawSurface_t>( mapDrawSurfs + e.firstDrawSurf, mapDrawSurfs + numMapDrawSurfs ) )
 	{
 		/* only subdivide brush sides */
 		if ( ds.type != ESurfaceType::Face || ds.mapBrush == NULL || ds.sideRef == NULL || ds.sideRef->side == NULL ) {
@@ -1659,7 +1659,7 @@ static int AddReferenceToTree_r( mapDrawSurface_t *ds, node_t *node, bool skybox
 		}
 
 		/* increase the leaf bounds */
-		for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			node->minmax.extend( vert.xyz );
 	}
 
@@ -1941,7 +1941,7 @@ static int FilterTrianglesIntoTree( mapDrawSurface_t *ds, tree_t& tree ){
 	}
 
 	/* use point filtering as well */
-	for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 		refs += FilterPointIntoTree_r( vert.xyz, ds, tree.headnode );
 
 	return refs;
@@ -2018,7 +2018,7 @@ static void EmitDrawVerts( const mapDrawSurface_t *ds, bspDrawSurface_t& out ){
 	/* copy the verts */
 	out.firstVert = bspDrawVerts.size();
 	out.numVerts = ds->numVerts;
-	for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 	{
 		/* allocate a new vert */ /* copy it */
 		bspDrawVert_t& dv = bspDrawVerts.emplace_back( vert );
@@ -2200,7 +2200,7 @@ static void EmitPatchSurface( const entity_t& e, mapDrawSurface_t *ds ){
 	/* invert the surface if necessary */
 	if ( ds->backSide || ds->shaderInfo->invert ) {
 		/* walk the verts, flip the normal */
-		for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			vector3_negate( vert.normal );
 
 		/* walk the verts again, but this time reverse their order */
@@ -2494,7 +2494,7 @@ static void EmitTriangleSurface( mapDrawSurface_t *ds ){
 		}
 
 		/* walk the verts, flip the normal */
-		for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			vector3_negate( vert.normal );
 
 		/* invert facing */
@@ -2786,7 +2786,7 @@ static void BiasSurfaceTextures( mapDrawSurface_t *ds ){
 	const Vector2 bias = CalcSurfaceTextureBias( ds );
 
 	/* bias the texture coordinates */
-	for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+	for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 	{
 		vert.st -= bias;
 	}
@@ -2954,7 +2954,7 @@ static int AddSurfaceModels( mapDrawSurface_t *ds, entity_t& entity ){
 			float alpha = 0.0f;
 
 			/* walk verts */
-			for ( const bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+			for ( const bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 			{
 				centroid.xyz += vert.xyz;
 				centroid.normal += vert.normal;
@@ -3110,7 +3110,7 @@ static void VolumeColorMods( const entity_t& e, mapDrawSurface_t *ds ){
 		}
 
 		/* iterate verts */
-		for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+		for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 		{
 			if( std::none_of( b->sides.cbegin(), b->sides.cend(), [&vert]( const side_t& side ){
 				return plane3_distance_to_point( mapplanes[ side.planenum ].plane, vert.xyz ) > 1.0f; } ) ) /* point-plane test */
@@ -3167,7 +3167,7 @@ void FilterDrawsurfsIntoTree( entity_t& e, tree_t& tree ){
 			refs = 0;
 
 			/* apply texture coordinate mods */
-			for ( bspDrawVert_t& vert : Span( ds->verts, ds->numVerts ) )
+			for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( ds->verts, ds->numVerts ) )
 				TCMod( si->mod, vert.st );
 
 			/* ydnar: apply shader colormod */

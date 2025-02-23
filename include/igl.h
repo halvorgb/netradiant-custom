@@ -25,7 +25,12 @@
 #include <cstring>
 #include "generic/constant.h"
 
+#ifdef __APPLE__
+#include <QtGui/QOpenGLFunctions_2_0>
+#else
 #include <QOpenGLFunctions_2_0>
+#endif
+
 #include "gtkutil/glfont.h"
 
 /// \brief A module which wraps a runtime-binding of the standard OpenGL functions.

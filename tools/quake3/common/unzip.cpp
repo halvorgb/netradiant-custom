@@ -271,6 +271,20 @@ typedef Byte    *voidp;
 #define zlib_version zlibVersion()
 /* for compatibility with versions < 1.0.2 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+// Only the declarations, not the implementations
+int inflate(z_streamp strm, int flush);
+int inflateEnd(z_streamp strm);
+uLong crc32(uLong crc, const Byte *buf, uInt len);
+int inflateInit2_(z_stream_s*, int, char const*, int);
+
+#ifdef __cplusplus
+}
+#endif
+
                         /* basic functions */
 
 const char * zlibVersion OF((void));

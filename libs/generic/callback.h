@@ -211,7 +211,6 @@ class Callback<R(Ts...)> : public detail::CallbackBase<R(*)(void *, Ts...)>
 	using Base = detail::CallbackBase<R (*)(void *, Ts...)>;
 
 	static R nullThunk( void *, Ts... ){
-		return R{};
 	}
 
 public:

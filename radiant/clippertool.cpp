@@ -175,7 +175,7 @@ void Clipper_constructPreferences( PreferencesPage& page ){
 		const char* dowhat[] = { "Clip    ", "Split", };
 		page.appendRadio(
 		    "On DoubleClick do: ",
-		    StringArrayRange( dowhat ),
+		    makeStringArrayRange( dowhat ),
 		    IntImportCaller( g_clipper_doubleclicked_split ),
 		    IntExportCaller( g_clipper_doubleclicked_split )
 		);

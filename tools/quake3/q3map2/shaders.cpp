@@ -53,7 +53,7 @@ void ColorMod( const colorMod_t *colormod, int numVerts, bspDrawVert_t *drawVert
 
 
 	/* walk vertex list */
-	for ( bspDrawVert_t& dv : Span( drawVerts, numVerts ) )
+	for ( bspDrawVert_t& dv : Span<bspDrawVert_t>( drawVerts, numVerts ) )
 	{
 		/* walk colorMod list */
 		for ( const colorMod_t *cm = colormod; cm != NULL; cm = cm->next )
@@ -215,7 +215,7 @@ const surfaceParm_t         *GetSurfaceParm( const char *name ){
 			return &sp;
 
 	/* check custom info parms */
-	for ( const surfaceParm_t& sp : Span( custSurfaceParms, numCustSurfaceParms ) )
+	for ( const surfaceParm_t& sp : Span<surfaceParm_t>( custSurfaceParms, numCustSurfaceParms ) )
 		if ( striEqual( name, sp.name ) )
 			return &sp;
 
@@ -315,7 +315,7 @@ void WriteMapShaderFile(){
 
 	/* walk the shader list */
 	int num = 0;
-	for ( const shaderInfo_t& si : Span( shaderInfo, numShaderInfo ) )
+	for ( const shaderInfo_t& si : Span<shaderInfo_t>( shaderInfo, numShaderInfo ) )
 	{
 		if ( si.custom && !strEmptyOrNull( si.shaderText ) ) {
 			num++;

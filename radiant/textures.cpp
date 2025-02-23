@@ -771,7 +771,7 @@ void Textures_constructPreferences( PreferencesPage& page ){
 		const char* percentages[] = { "100%", "50%", "25%", "12.5%", };
 		page.appendRadio(
 		    "Texture Quality",
-		    StringArrayRange( percentages ),
+		    makeStringArrayRange( percentages ),
 		    TextureMiplevelImportCaller( g_Textures_mipLevel ),
 		    IntExportCaller( g_Textures_mipLevel )
 		);
@@ -787,7 +787,7 @@ void Textures_constructPreferences( PreferencesPage& page ){
 		const char* texture_mode[] = { "Nearest", "Nearest Mipmap", "Linear", "Bilinear", "Bilinear Mipmap", "Trilinear" };
 		page.appendCombo(
 		    "Texture Render Mode",
-		    StringArrayRange( texture_mode ),
+		    makeStringArrayRange( texture_mode ),
 		    IntImportCallback( TextureModeImportCaller( g_texture_mode ) ),
 		    IntExportCallback( TextureModeExportCaller( g_texture_mode ) )
 		);
@@ -808,11 +808,11 @@ void Textures_constructPreferences( PreferencesPage& page ){
 					const StringArrayRange compression(
 					    ( g_texture_globals.m_bOpenGLCompressionSupported )
 					    ? ( g_texture_globals.m_bS3CompressionSupported )
-					      ? StringArrayRange( compression_opengl_s3tc )
-					      : StringArrayRange( compression_opengl )
+					      ? makeStringArrayRange( compression_opengl_s3tc )
+					      : makeStringArrayRange( compression_opengl )
 					    : ( g_texture_globals.m_bS3CompressionSupported )
-					      ? StringArrayRange( compression_s3tc )
-					      : StringArrayRange( compression_none )
+					      ? makeStringArrayRange( compression_s3tc )
+					      : makeStringArrayRange( compression_none )
 					);
 					QComboBox *combo = static_cast<QComboBox *>( obj );
 					for( const char *c : compression )

@@ -2007,7 +2007,7 @@ void Layout_constructPreferences( PreferencesPage& page ){
 		const char* layouts[] = { "window1.png", "window2.png", "window3.png", "window4.png" };
 		page.appendRadioIcons(
 		    "Window Layout",
-		    StringArrayRange( layouts ),
+		    makeStringArrayRange( layouts ),
 		    LatchedImportCaller( g_Layout_viewStyle ),
 		    IntExportCaller( g_Layout_viewStyle.m_latched )
 		);

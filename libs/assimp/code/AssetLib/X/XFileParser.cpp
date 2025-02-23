@@ -61,7 +61,15 @@ using namespace Assimp::Formatter;
 #ifndef ASSIMP_BUILD_NO_COMPRESSED_X
 
 #ifdef ASSIMP_BUILD_NO_OWN_ZLIB
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <zlib.h>
+
+#ifdef __cplusplus
+}
+#endif
 #else
 #include "../contrib/zlib/zlib.h"
 #endif

@@ -95,7 +95,7 @@ void Brush_constructPreferences( PreferencesPage& page ){
 		page.appendCombo(
 		    "New map Brush Type",
 		    g_brushType,
-		    StringArrayRange( names )
+		    makeStringArrayRange( names )
 		);
 	}
 	// d1223m

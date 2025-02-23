@@ -60,7 +60,7 @@ static fixedWinding_t *NewFixedWinding( int numpoints ){
 
 
 static void print_leaf( const leaf_t *l ){
-	for ( const vportal_t *p : Span( l->portals, l->numportals ) )
+	for ( const vportal_t *p : Span<vportal_t*const>( l->portals, l->numportals ) )
 	{
 		const visPlane_t pl = p->plane;
 		Sys_Printf( "portal %4i to leaf %4i : %7.1f : (%4.1f, %4.1f, %4.1f)\n", (int)( p - portals ), p->leaf, pl.dist(), pl.normal()[0], pl.normal()[1], pl.normal()[2] );
@@ -140,7 +140,7 @@ static void ClusterMerge( int leafnum ){
 
 	memset( portalvector, 0, portalbytes );
 
-	for ( const vportal_t *p : Span( leafs[mergedleafnum].portals, leafs[mergedleafnum].numportals ) )
+	for ( const vportal_t *p : Span<vportal_t*const>( leafs[mergedleafnum].portals, leafs[mergedleafnum].numportals ) )
 	{
 		if ( p->removed ) {
 			continue;
@@ -244,7 +244,7 @@ static void CalcPassagePortalVis(){
  */
 static void CalcFastVis(){
 	// fastvis just uses mightsee for a very loose bound
-	for ( vportal_t& p : Span( portals, numportals * 2 ) )
+	for ( vportal_t& p : Span<vportal_t>( portals, numportals * 2 ) )
 	{
 		p.portalvis = p.portalflood;
 		p.status = EVStatus::Done;
@@ -343,7 +343,7 @@ static void CalcVis(){
 static void SetPortalSphere( vportal_t& p ){
 	Vector3 origin( 0 );
 
-	for ( const Vector3& point : Span( p.winding->points, p.winding->numpoints ) )
+	for ( const Vector3& point : Span<Vector3>( p.winding->points, p.winding->numpoints ) )
 	{
 		origin += point;
 	}
@@ -351,7 +351,7 @@ static void SetPortalSphere( vportal_t& p ){
 	origin /= p.winding->numpoints;
 
 	double bestr = 0;
-	for ( const Vector3& point : Span( p.winding->points, p.winding->numpoints ) )
+	for ( const Vector3& point : Span<Vector3>( p.winding->points, p.winding->numpoints ) )
 	{
 		value_maximize( bestr, vector3_length( point - origin ) );
 	}
@@ -373,14 +373,14 @@ static bool Winding_PlanesConcave( const fixedWinding_t *w1, const fixedWinding_
 	}
 
 	// check if one of the points of winding 1 is at the front of the plane of winding 2
-	for ( const Vector3& point : Span( w1->points, w1->numpoints ) )
+	for ( const Vector3& point : Span<const Vector3>( w1->points, w1->numpoints ) )
 	{
 		if ( plane3_distance_to_point( plane2, point ) > WCONVEX_EPSILON ) {
 			return true;
 		}
 	}
 	// check if one of the points of winding 2 is at the front of the plane of winding 1
-	for ( const Vector3& point : Span( w2->points, w2->numpoints ) )
+	for ( const Vector3& point : Span<const Vector3>( w2->points, w2->numpoints ) )
 	{
 		if ( plane3_distance_to_point( plane1, point ) > WCONVEX_EPSILON ) {
 			return true;
@@ -400,14 +400,14 @@ static bool TryMergeLeaves( int l1num, int l2num ){
 
 	for ( const leaf_t *l1 : { &faceleafs[l1num], &leafs[l1num] } )
 	{
-		for ( const vportal_t *p1 : Span( l1->portals, l1->numportals ) )
+		for ( const vportal_t *p1 : Span<vportal_t*const>( l1->portals, l1->numportals ) )
 		{
 			if ( p1->leaf == l2num ) {
 				continue;
 			}
 			for ( const leaf_t *l2 : { &faceleafs[l2num], &leafs[l2num] } )
 			{
-				for ( const vportal_t *p2 : Span( l2->portals, l2->numportals ) )
+				for ( const vportal_t *p2 : Span<vportal_t*const>( l2->portals, l2->numportals ) )
 				{
 					if ( p2->leaf == l1num ) {
 						continue;
@@ -426,7 +426,7 @@ static bool TryMergeLeaves( int l1num, int l2num ){
 		leaf_t& l2 = lfs[l2num];
 		int numportals = 0;
 		//the leaves can be merged now
-		for ( vportal_t *p1 : Span( l1.portals, l1.numportals ) )
+		for ( vportal_t *p1 : Span<vportal_t*const>( l1.portals, l1.numportals ) )
 		{
 			if ( p1->leaf == l2num ) {
 				p1->removed = true;
@@ -434,7 +434,7 @@ static bool TryMergeLeaves( int l1num, int l2num ){
 			}
 			portals[numportals++] = p1;
 		}
-		for ( vportal_t *p2 : Span( l2.portals, l2.numportals ) )
+		for ( vportal_t *p2 : Span<vportal_t*const>( l2.portals, l2.numportals ) )
 		{
 			if ( p2->leaf == l1num ) {
 				p2->removed = true;
@@ -455,7 +455,7 @@ static bool TryMergeLeaves( int l1num, int l2num ){
    ============
  */
 static void UpdatePortals(){
-	for ( vportal_t& p : Span( portals, numportals * 2 ) )
+	for ( vportal_t& p : Span<vportal_t>( portals, numportals * 2 ) )
 		if ( !p.removed )
 			while ( leafs[p.leaf].merged >= 0 )
 				p.leaf = leafs[p.leaf].merged;
@@ -485,7 +485,7 @@ static void MergeLeaves(){
 			}
 
 
-			for ( const vportal_t *p : Span( leaf.portals, leaf.numportals ) )
+			for ( const vportal_t *p : Span<vportal_t*const>( leaf.portals, leaf.numportals ) )
 			{
 				//never merge through hint portals
 				if ( !p->removed && !p->hint ) {
@@ -673,7 +673,7 @@ static void MergeLeafPortals(){
 static int CountActivePortals(){
 	int num = 0, hints = 0;
 
-	for ( const vportal_t& p : Span( portals, numportals * 2 ) )
+	for ( const vportal_t& p : Span<vportal_t>( portals, numportals * 2 ) )
 	{
 		if ( !p.removed ) {
 			num++;
@@ -729,7 +729,7 @@ static void LoadPortals( char *name ){
 	portals = safe_calloc( 2 * numportals * sizeof( vportal_t ) );
 	leafs = safe_calloc( portalclusters * sizeof( leaf_t ) );
 
-	for ( leaf_t& leaf : Span( leafs, portalclusters ) )
+	for ( leaf_t& leaf : Span<leaf_t>( leafs, portalclusters ) )
 		leaf.merged = -1;
 
 	bspVisBytes.resize( VIS_HEADER_SIZE + portalclusters * leafbytes );
@@ -760,7 +760,7 @@ static void LoadPortals( char *name ){
 		fixedWinding_t *w = NewFixedWinding( numpoints );
 		w->numpoints = numpoints;
 
-		for ( Vector3& point : Span( w->points, w->numpoints ) )
+		for ( Vector3& point : Span<Vector3>( w->points, w->numpoints ) )
 		{
 			if ( fscanf( f, "(%f %f %f ) ",
 			             &point[0], &point[1], &point[2] ) != 3 ) {
@@ -827,7 +827,7 @@ static void LoadPortals( char *name ){
 		fixedWinding_t *w = NewFixedWinding( numpoints );
 		w->numpoints = numpoints;
 
-		for ( Vector3& point : Span( w->points, w->numpoints ) )
+		for ( Vector3& point : Span<Vector3>( w->points, w->numpoints ) )
 		{
 			if ( fscanf( f, "(%f %f %f ) ",
 			             &point[0], &point[1], &point[2] ) != 3 ) {

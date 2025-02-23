@@ -242,14 +242,14 @@ void Grid_constructPreferences( PreferencesPage& page ){
 	page.appendCombo(
 	    "Default grid spacing",
 	    g_grid_default,
-	    StringArrayRange( g_gridnames )
+	    makeStringArrayRange( g_gridnames )
 	);
 	{
 		const char* coords[] = { "4096", "8192", "16384", "32768", "65536" };
 
 		page.appendCombo(
 		    "Max grid coordinate",
-		    StringArrayRange( coords ),
+		    makeStringArrayRange( coords ),
 		    IntImportCallback( maxGridCoordPowerImportCaller() ),
 		    IntExportCallback( maxGridCoordPowerExportCaller() )
 		);

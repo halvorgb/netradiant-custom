@@ -2424,7 +2424,7 @@ void Camera_constructPreferences( PreferencesPage& page ){
 	const char* render_modes[]{ "Wireframe", "Flatshade", "Textured", "Textured+Wire", "Lighting" };
 	page.appendCombo(
 	    "Render Mode",
-	    StringArrayRange( render_modes, std::size( render_modes ) - ( g_pGameDescription->mGameType == "doom3"? 0 : 1 ) ),
+	    makeStringArrayRange( render_modes, std::size( render_modes ) - ( g_pGameDescription->mGameType == "doom3"? 0 : 1 ) ),
 	    IntImportCallback( RenderModeImportCaller() ),
 	    IntExportCallback( RenderModeExportCaller() )
 	);
@@ -2434,7 +2434,7 @@ void Camera_constructPreferences( PreferencesPage& page ){
 
 		page.appendCombo(
 		    "MSAA",
-		    StringArrayRange( samples ),
+		    makeStringArrayRange( samples ),
 		    IntImportCallback( MSAAImportCaller() ),
 		    IntExportCallback( MSAAExportCaller() )
 		);
@@ -2445,7 +2445,7 @@ void Camera_constructPreferences( PreferencesPage& page ){
 	page.appendCombo(
 	    "Strafe Mode",
 	    g_camwindow_globals_private.m_strafeMode,
-	    StringArrayRange( strafe_mode )
+	    makeStringArrayRange( strafe_mode )
 	);
 
 	page.appendSpinner( "Field Of View", 1.0, 175.0,

@@ -420,7 +420,7 @@ void ProcessDecals(){
 				FreeMesh( subdivided );
 
 				/* offset by projector origin */
-				for ( bspDrawVert_t& vert : Span( mesh->verts, mesh->width * mesh->height ) )
+				for ( bspDrawVert_t& vert : Span<bspDrawVert_t>( mesh->verts, mesh->width * mesh->height ) )
 					vert.xyz += e.origin;
 
 				/* iterate through the mesh quads */
