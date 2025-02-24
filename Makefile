@@ -87,7 +87,7 @@ LIBS_GL            ?= -lGL # -lopengl32 on Win32
 CPPFLAGS_DL        ?=
 LIBS_DL            ?= -ldl # nothing on Win32
 CPPFLAGS_ZLIB      ?=
-LIBS_ZLIB          ?=
+LIBS_ZLIB          ?= -lz
 CPPFLAGS_JPEG      ?=
 LIBS_JPEG          ?= -ljpeg
 DEPEND_ON_MAKEFILE ?= yes
@@ -120,7 +120,7 @@ CFLAGS_COMMON = -MMD -W -Wall -Wcast-align -Wcast-qual -Wno-unused-parameter -Wn
 CPPFLAGS_COMMON =
 LDFLAGS_COMMON =
 LIBS_COMMON =
-CXXFLAGS_COMMON = -std=c++20 -Wreorder -fno-exceptions -fno-rtti
+CXXFLAGS_COMMON = -std=c++20 -Wreorder
 
 ifeq ($(BUILD),debug)
 ifeq ($(findstring -g,$(CFLAGS)),)
@@ -232,7 +232,7 @@ ifeq ($(OS),Darwin)
     # Basic Darwin settings
     CPPFLAGS_COMMON += -DPOSIX -DXWINDOWS -DQT_NO_KEYWORDS
     CFLAGS_COMMON += -fPIC
-    CXXFLAGS_COMMON += -fno-exceptions -fno-rtti
+    CXXFLAGS_COMMON +=
 
     # Directory settings
     MACLIBDIR ?= /opt/homebrew/lib
@@ -253,7 +253,7 @@ ifeq ($(OS),Darwin)
     LDFLAGS_COMMON += -L$(MACLIBDIR) \
                       -L/usr/X11R6/lib \
                       -L$(MESADIR)/lib \
-                      -lz -v
+                      -v
 
     LDFLAGS_DLL += -dynamiclib -ldl -L/opt/homebrew/opt/zlib/lib -v
 
