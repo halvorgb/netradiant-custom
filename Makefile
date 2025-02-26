@@ -120,7 +120,7 @@ CFLAGS_COMMON = -MMD -W -Wall -Wcast-align -Wcast-qual -Wno-unused-parameter -Wn
 CPPFLAGS_COMMON =
 LDFLAGS_COMMON =
 LIBS_COMMON =
-CXXFLAGS_COMMON = -std=c++20 -Wreorder
+CXXFLAGS_COMMON = -std=c++20 -Wreorder -fno-exceptions -fno-rtti
 
 ifeq ($(BUILD),debug)
 ifeq ($(findstring -g,$(CFLAGS)),)
@@ -232,7 +232,7 @@ ifeq ($(OS),Darwin)
     # Basic Darwin settings
     CPPFLAGS_COMMON += -DPOSIX -DXWINDOWS -DQT_NO_KEYWORDS
     CFLAGS_COMMON += -fPIC
-    CXXFLAGS_COMMON +=
+    CXXFLAGS_COMMON += -fno-exceptions -fno-rtti
 
     # Directory settings
     MACLIBDIR ?= /opt/homebrew/lib
