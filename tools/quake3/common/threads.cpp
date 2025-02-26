@@ -151,60 +151,26 @@ void ThreadUnlock(){
    RunThreadsOn
    =============
  */
-#ifdef __APPLE__
-void* thread_wrapper(void* arg) {
-    auto params = static_cast<std::pair<void (*)(int), int>*>(arg);
-    params->first(params->second);
-    delete params;
-    return nullptr;
+void RunThreadsOn( void ( *func )( int ) ){
+	if ( numthreads == 1 ) { // use same thread
+		func( 0 );
+	}
+	else
+	{
+		threaded = true;
+
+		std::thread threads[MAX_THREADS];
+
+		for ( int i = 0; i < numthreads; ++i )
+			threads[i] = std::thread( func, i );
+
+		for ( int i = 0; i < numthreads; ++i )
+			threads[i].join();
+
+		threaded = false;
+	}
 }
 
-std::thread create_thread_with_stack(void (*func)(int), int arg) {
-    pthread_attr_t attr;
-    pthread_attr_init(&attr);
-    pthread_attr_setstacksize(&attr, 8 * 1024 * 1024);
-
-    pthread_t thread;
-    auto params = new std::pair<void (*)(int), int>(func, arg);
-
-    if (pthread_create(&thread, &attr, thread_wrapper, params) != 0) {
-        delete params;
-        pthread_attr_destroy(&attr);
-        throw std::runtime_error("Failed to create thread");
-    }
-
-    pthread_attr_destroy(&attr);
-
-    // Create a new thread that will take over the pthread
-    return std::thread([thread]() {
-        pthread_join(thread, nullptr);
-    });
-}
-#endif
-
-void RunThreadsOn(void (*func)(int)) {
-    if (numthreads == 1) { // use same thread
-        func(0);
-    }
-    else {
-        threaded = true;
-
-        std::thread threads[MAX_THREADS];
-
-        for (int i = 0; i < numthreads; ++i) {
-#ifdef __APPLE__
-            threads[i] = create_thread_with_stack(func, i);
-#else
-            threads[i] = std::thread(func, i);
-#endif
-        }
-
-        for (int i = 0; i < numthreads; ++i)
-            threads[i].join();
-
-        threaded = false;
-    }
-}
 #else
 
 #ifndef WIN32
